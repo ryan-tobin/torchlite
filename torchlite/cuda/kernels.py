@@ -14,20 +14,34 @@ except ImportError:
     CUDA_AVAILABLE = False
 
 if CUDA_AVAILABLE:
-    cuda_add = cp.ElementwiseKernel("float32 x, float32 y", "float32 z", "z = x + y", "cuda_add")
+    cuda_add = cp.ElementwiseKernel(
+        "float32 x, float32 y",
+        "float32 z",
+        "z = x + y",
+        "cuda_add")
 
     cuda_multiply = cp.ElementwiseKernel(
         "float32 x, float32 y", "float32 z", "z = x * y", "cuda_multiply"
     )
 
     # Activation functions
-    cuda_relu = cp.ElementwiseKernel("float32 x", "float32 y", "y = fmaxf(0.0f, x)", "cuda_relu")
+    cuda_relu = cp.ElementwiseKernel(
+        "float32 x",
+        "float32 y",
+        "y = fmaxf(0.0f, x)",
+        "cuda_relu")
 
     cuda_sigmoid = cp.ElementwiseKernel(
-        "float32 x", "float32 y", "y = 1.0f / (1.0f + expf(-x))", "cuda_sigmoid"
-    )
+        "float32 x",
+        "float32 y",
+        "y = 1.0f / (1.0f + expf(-x))",
+        "cuda_sigmoid")
 
-    cuda_tanh = cp.ElementwiseKernel("float32 x", "float32 y", "y = tanhf(x)", "cuda_tanh")
+    cuda_tanh = cp.ElementwiseKernel(
+        "float32 x",
+        "float32 y",
+        "y = tanhf(x)",
+        "cuda_tanh")
 
     def cuda_matmul(a, b):
         """GPU-accelerated matrix multiplcation."""

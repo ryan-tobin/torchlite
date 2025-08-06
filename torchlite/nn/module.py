@@ -43,7 +43,8 @@ class Module:
             modules = self.__dict__["_modules"]
             if name in modules:
                 return modules[name]
-        raise AttributeError(f"'{type(self).__name__}' object has no attribute '{name}'")
+        raise AttributeError(
+            f"'{type(self).__name__}' object has no attribute '{name}'")
 
     def parameters(self) -> Iterator[Parameter]:
         """Return an iterator over module parameters."""

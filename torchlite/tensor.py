@@ -1,5 +1,4 @@
-import weakref
-from typing import List, Optional, Tuple, Union
+from typing import Union, Tuple, Tuple, Union
 
 import numpy as np
 
@@ -59,11 +58,12 @@ class Tensor:
                 grad = out.grad
                 # Sum over dimensions that were broadcast
                 ndims_added = len(grad.shape) - len(self.shape)
-                for i in range(ndims_added):
+                for _ in range(ndims_added):
                     grad = grad.sum(axis=0)
 
                 # Sum over dimensions that were size 1
-                for i, (grad_dim, data_dim) in enumerate(zip(grad.shape, self.shape)):
+                for i, (grad_dim, data_dim) in enumerate(
+                        zip(grad.shape, self.shape, strict=False)):
                     if data_dim == 1 and grad_dim > 1:
                         grad = grad.sum(axis=i, keepdims=True)
 
@@ -77,11 +77,12 @@ class Tensor:
                 grad = out.grad
                 # Sum over dimensions that were broadcast
                 ndims_added = len(grad.shape) - len(other.shape)
-                for i in range(ndims_added):
+                for _ in range(ndims_added):
                     grad = grad.sum(axis=0)
 
                 # Sum over dimensions that were size 1
-                for i, (grad_dim, data_dim) in enumerate(zip(grad.shape, other.shape)):
+                for i, (grad_dim, data_dim) in enumerate(
+                        zip(grad.shape, other.shape, strict=False)):
                     if data_dim == 1 and grad_dim > 1:
                         grad = grad.sum(axis=i, keepdims=True)
 
@@ -244,10 +245,11 @@ class Tensor:
                 # Handle broadcasting
                 grad = out.grad
                 ndims_added = len(grad.shape) - len(self.shape)
-                for i in range(ndims_added):
+                for _ in range(ndims_added):
                     grad = grad.sum(axis=0)
 
-                for i, (grad_dim, data_dim) in enumerate(zip(grad.shape, self.shape)):
+                for i, (grad_dim, data_dim) in enumerate(
+                        zip(grad.shape, self.shape, strict=False)):
                     if data_dim == 1 and grad_dim > 1:
                         grad = grad.sum(axis=i, keepdims=True)
 
@@ -260,10 +262,11 @@ class Tensor:
                 # Handle broadcasting with negation
                 grad = -out.grad
                 ndims_added = len(grad.shape) - len(other.shape)
-                for i in range(ndims_added):
+                for _ in range(ndims_added):
                     grad = grad.sum(axis=0)
 
-                for i, (grad_dim, data_dim) in enumerate(zip(grad.shape, other.shape)):
+                for i, (grad_dim, data_dim) in enumerate(
+                        zip(grad.shape, other.shape, strict=False)):
                     if data_dim == 1 and grad_dim > 1:
                         grad = grad.sum(axis=i, keepdims=True)
 
@@ -317,10 +320,15 @@ class Tensor:
 
     def __pow__(self, power):
         """Power operator."""
-        assert isinstance(power, (int, float)), "Only supporting int/float powers for now"
+        assert isinstance(
+            power, (int, float)), "Only supporting int/float powers for now"
         out = Tensor(
-            self.data**power, requires_grad=self.requires_grad, _children=(self,), _op=f"**{power}"
-        )
+            self.data**power,
+            requires_grad=self.requires_grad,
+            _children=(
+                self,
+            ),
+            _op=f"**{power}")
 
         def _backward():
             if self.requires_grad:
@@ -380,8 +388,9 @@ class Tensor:
     def tanh(self):
         """Hyperbolic tangent activation."""
         out = Tensor(
-            np.tanh(self.data), requires_grad=self.requires_grad, _children=(self,), _op="tanh"
-        )
+            np.tanh(
+                self.data), requires_grad=self.requires_grad, _children=(
+                self,), _op="tanh")
 
         def _backward():
             if self.requires_grad:
@@ -401,11 +410,11 @@ class Tensor:
 
         # Sum over extra leading dimensions
         ndims_added = len(grad.shape) - len(shape)
-        for i in range(ndims_added):
+        for _ in range(ndims_added):
             grad = grad.sum(axis=0)
 
         # Sum over dimensions that were size 1
-        for i, (grad_dim, data_dim) in enumerate(zip(grad.shape, shape)):
+        for i, (grad_dim, data_dim) in enumerate(zip(grad.shape, shape, strict=False)):
             if data_dim == 1 and grad_dim > 1:
                 grad = grad.sum(axis=i, keepdims=True)
 

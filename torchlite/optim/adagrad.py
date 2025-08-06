@@ -26,4 +26,5 @@ class Adagrad(Optimizer):
                     state["sum"] = np.zeros_like(param.data)
 
                 state["sum"] += grad**2
-                param.data -= group["lr"] * grad / (np.sqrt(state["sum"]) + group["eps"])
+                param.data -= group["lr"] * grad / \
+                    (np.sqrt(state["sum"]) + group["eps"])

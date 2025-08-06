@@ -19,7 +19,8 @@ class LRScheduler(ABC):
             for group in optimizer.param_groups:
                 group.setdefault("initial_lr", group["lr"])
 
-        self.base_lrs = [group["initial_lr"] for group in optimizer.param_groups]
+        self.base_lrs = [group["initial_lr"]
+                         for group in optimizer.param_groups]
         self.step()
 
     @abstractmethod
@@ -34,7 +35,7 @@ class LRScheduler(ABC):
         else:
             self.last_epoch = epoch
 
-        for param_group, lr in zip(self.optimizer.param_groups, self.get_lr()):
+        for param_group, lr in zip(self.optimizer.param_groups, self.get_lr(, strict=False)):
             param_group["lr"] = lr
 
 
@@ -49,7 +50,9 @@ class StepLR(LRScheduler):
     def get_lr(self):
         if self.last_epoch == 0 or self.last_epoch % self.step_size != 0:
             return [group["lr"] for group in self.optimizer.param_groups]
-        return [group["lr"] * self.gamma for group in self.optimizer.param_groups]
+        return [
+            group["lr"] *
+            self.gamma for group in self.optimizer.param_groups]
 
 
 class ExponentialLR(LRScheduler):
@@ -62,7 +65,9 @@ class ExponentialLR(LRScheduler):
     def get_lr(self):
         if self.last_epoch == 0:
             return self.base_lrs
-        return [group["lr"] * self.gamma for group in self.optimizer.param_groups]
+        return [
+            group["lr"] *
+            self.gamma for group in self.optimizer.param_groups]
 
 
 class CosineAnnealingLR(LRScheduler):
@@ -79,7 +84,7 @@ class CosineAnnealingLR(LRScheduler):
         elif (self.last_epoch - 1 - self.T_max) % (2 * self.T_max) == 0:
             return [
                 group["lr"] + (base_lr - self.eta_min) * (1 - math.cos(math.pi / self.T_max)) / 2
-                for base_lr, group in zip(self.base_lrs, self.optimizer.param_groups)
+                for base_lr, group in zip(self.base_lrs, self.optimizer.param_groups, strict=False)
             ]
         return [
             (1 + math.cos(math.pi * self.last_epoch / self.T_max))
@@ -93,7 +98,14 @@ class CosineAnnealingLR(LRScheduler):
 class ReduceLROnPlateau(LRScheduler):
     """Reduce learning rate when metric has stopped improving"""
 
-    def __init__(self, optimizer, mode="min", factor=0.1, patience=10, threshold=1e-4, min_lr=0):
+    def __init__(
+            self,
+            optimizer,
+            mode="min",
+            factor=0.1,
+            patience=10,
+            threshold=1e-4,
+            min_lr=0):
         self.mode = mode
         self.factor = factor
         self.patience = patience

@@ -16,7 +16,13 @@ class Sigmoid(Module):
 
     def forward(self, x: Tensor) -> Tensor:
         data = 1 / (1 + np.exp(-x.data))
-        out = Tensor(data, requires_grad=x.requires_grad, _children=(x,), _op="sigmoid")
+        out = Tensor(
+            data,
+            requires_grad=x.requires_grad,
+            _children=(
+                x,
+            ),
+            _op="sigmoid")
 
         def _backward():
             if x.requires_grad:
@@ -35,7 +41,13 @@ class Tanh(Module):
 
     def forward(self, x: Tensor) -> Tensor:
         data = np.tanh(x.data)
-        out = Tensor(data, requires_grad=x.requires_grad, _children=(x,), _op="tanh")
+        out = Tensor(
+            data,
+            requires_grad=x.requires_grad,
+            _children=(
+                x,
+            ),
+            _op="tanh")
 
         def _backward():
             if x.requires_grad:
@@ -59,7 +71,13 @@ class Softmax(Module):
     def forward(self, x: Tensor) -> Tensor:
         exp_x = np.exp(x.data - np.max(x.data, axis=self.dim, keepdims=True))
         data = exp_x / np.sum(exp_x, axis=self.dim, keepdims=True)
-        out = Tensor(data, requires_grad=x.requires_grad, _children=(x,), _op="softmax")
+        out = Tensor(
+            data,
+            requires_grad=x.requires_grad,
+            _children=(
+                x,
+            ),
+            _op="softmax")
 
         def _backward():
             if x.requires_grad:
@@ -100,5 +118,6 @@ class GELU(Module):
     """Guassian Error Linear Unit activation."""
 
     def forward(self, x):
-        data = 0.5 * x.data * (1 + np.tanh(np.sqrt(2 / np.pi) * (x.data + 0.044715 * x.data**3)))
+        data = 0.5 * x.data * \
+            (1 + np.tanh(np.sqrt(2 / np.pi) * (x.data + 0.044715 * x.data**3)))
         return Tensor(data, requires_grad=x.requires_grad)

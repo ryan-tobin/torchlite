@@ -97,7 +97,10 @@ class Log(Function):
     @staticmethod
     def forward(ctx, input):
         ctx.save_for_backward(input)
-        return type(input)(np.log(input.data), requires_grad=input.requires_grad)
+        return type(input)(
+            np.log(
+                input.data),
+            requires_grad=input.requires_grad)
 
     @staticmethod
     def backward(ctx, grad_output):
@@ -117,4 +120,5 @@ class Pow(Function):
     @staticmethod
     def backward(ctx, grad_output):
         input, exponent = ctx.saved_tensors
-        return grad_output * exponent * np.power(input.data, exponent - 1), None
+        return grad_output * exponent * \
+            np.power(input.data, exponent - 1), None

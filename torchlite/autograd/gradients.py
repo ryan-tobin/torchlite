@@ -7,7 +7,12 @@ from typing import List, Optional, Tuple
 import numpy as np
 
 
-def grad(outputs, inputs, grad_outputs=None, retain_graph=False, create_graph=False):
+def grad(
+        outputs,
+        inputs,
+        grad_outputs=None,
+        retain_graph=False,
+        create_graph=False):
     """
     Compute gradients of outputs with respect to inputs.
 
@@ -100,7 +105,8 @@ def check_gradients(func, inputs, eps=1e-6):
 
     max_error = 0
     for analytical, numerical in zip(analytical_grads, numerical_grads):
-        rel_error = np.abs(analytical - numerical) / (np.abs(analytical) + np.abs(numerical) + 1e-8)
+        rel_error = np.abs(analytical - numerical) / \
+            (np.abs(analytical) + np.abs(numerical) + 1e-8)
         max_error = max(max_error, np.max(rel_error))
 
     return max_error

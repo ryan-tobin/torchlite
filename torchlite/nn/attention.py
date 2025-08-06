@@ -41,9 +41,27 @@ class MultiheadAttention(Module):
         V = self.v_proj(value)
 
         # Reshape for multi-head attention
-        Q_data = Q.data.reshape(batch_size, tgt_len, self.num_heads, self.head_dim).transpose(1, 2)
-        K_data = K.data.reshape(batch_size, src_len, self.num_heads, self.head_dim).transpose(1, 2)
-        V_data = V.data.reshape(batch_size, src_len, self.num_heads, self.head_dim).transpose(1, 2)
+        Q_data = Q.data.reshape(
+            batch_size,
+            tgt_len,
+            self.num_heads,
+            self.head_dim).transpose(
+            1,
+            2)
+        K_data = K.data.reshape(
+            batch_size,
+            src_len,
+            self.num_heads,
+            self.head_dim).transpose(
+            1,
+            2)
+        V_data = V.data.reshape(
+            batch_size,
+            src_len,
+            self.num_heads,
+            self.head_dim).transpose(
+            1,
+            2)
 
         Q = Tensor(Q_data, requires_grad=Q.requires_grad)
         K = Tensor(K_data, requires_grad=K.requires_grad)
@@ -69,8 +87,11 @@ class MultiheadAttention(Module):
         attn_output = attn_weights @ V
 
         # Reshape back
-        attn_output_data = attn_output.data.transpose(1, 2).reshape(batch_size, tgt_len, embed_dim)
-        attn_output = Tensor(attn_output_data, requires_grad=attn_output.requires_grad)
+        attn_output_data = attn_output.data.transpose(
+            1, 2).reshape(batch_size, tgt_len, embed_dim)
+        attn_output = Tensor(
+            attn_output_data,
+            requires_grad=attn_output.requires_grad)
 
         # Final projection
         output = self.out_proj(attn_output)

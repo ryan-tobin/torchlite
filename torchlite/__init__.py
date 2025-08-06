@@ -13,8 +13,8 @@ except ImportError as e:
     import warnings
 
     warnings.warn(
-        f"Could not import data module: {e}. Some functionality may be limited.", ImportWarning
-    )
+        f"Could not import data module: {e}. Some functionality may be limited.",
+        ImportWarning)
     data = None
 
 try:
@@ -23,8 +23,8 @@ except ImportError as e:
     import warnings
 
     warnings.warn(
-        f"Could not import utils module: {e}. Some functionality may be limited.", ImportWarning
-    )
+        f"Could not import utils module: {e}. Some functionality may be limited.",
+        ImportWarning)
     utils = None
 
 from .nn import Module, Parameter
@@ -56,7 +56,8 @@ try:
             RuntimeWarning,
         )
 except ImportError:
-    raise ImportError("TorchLite requires NumPy. Please install it with: pip install numpy>=1.19.0")
+    raise ImportError(
+        "TorchLite requires NumPy. Please install it with: pip install numpy>=1.19.0")
 
 
 def _get_version_info():

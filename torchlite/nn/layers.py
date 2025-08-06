@@ -16,8 +16,12 @@ class Linear(Module):
 
         # Xavier initialization
         self.weight = Parameter(
-            np.random.randn(in_features, out_features) * np.sqrt(2.0 / in_features)
-        )
+            np.random.randn(
+                in_features,
+                out_features) *
+            np.sqrt(
+                2.0 /
+                in_features))
         if bias:
             self.bias = Parameter(np.zeros((1, out_features)))
         else:
@@ -46,10 +50,16 @@ class Conv2d(Module):
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.kernel_size = (
-            (kernel_size, kernel_size) if isinstance(kernel_size, int) else kernel_size
-        )
+            (kernel_size,
+             kernel_size) if isinstance(
+                kernel_size,
+                int) else kernel_size)
         self.stride = (stride, stride) if isinstance(stride, int) else stride
-        self.padding = (padding, padding) if isinstance(padding, int) else padding
+        self.padding = (
+            padding,
+            padding) if isinstance(
+            padding,
+            int) else padding
 
         # Initialize weights
         k_h, k_w = self.kernel_size
@@ -73,7 +83,8 @@ class Conv2d(Module):
 
         # Pad input
         if p_h > 0 or p_w > 0:
-            x_padded = np.pad(x.data, ((0, 0), (0, 0), (p_h, p_h), (p_w, p_w)), mode="constant")
+            x_padded = np.pad(
+                x.data, ((0, 0), (0, 0), (p_h, p_h), (p_w, p_w)), mode="constant")
         else:
             x_padded = x.data
 
@@ -96,8 +107,12 @@ class Conv2d(Module):
                         w_start = ow * s_w
 
                         # Extract patch and compute convolution
-                        patch = x_padded[b, :, h_start : h_start + k_h, w_start : w_start + k_w]
-                        output[b, oc, oh, ow] = np.sum(patch * self.weight.data[oc])
+                        patch = x_padded[b,
+                                         :,
+                                         h_start: h_start + k_h,
+                                         w_start: w_start + k_w]
+                        output[b, oc, oh, ow] = np.sum(
+                            patch * self.weight.data[oc])
 
                         if self.bias is not None:
                             output[b, oc, oh, ow] += self.bias.data[oc]
@@ -126,10 +141,12 @@ class Conv2d(Module):
                                 h_start = oh * s_h
                                 w_start = ow * s_w
 
-                                patch = self.x_padded[
-                                    b, :, h_start : h_start + k_h, w_start : w_start + k_w
-                                ]
-                                grad_weight[oc] += patch * grad_output[b, oc, oh, ow]
+                                patch = self.x_padded[b,
+                                                      :,
+                                                      h_start: h_start + k_h,
+                                                      w_start: w_start + k_w]
+                                grad_weight[oc] += patch * \
+                                    grad_output[b, oc, oh, ow]
 
                 if self.weight.grad is None:
                     self.weight.grad = grad_weight
@@ -151,8 +168,7 @@ class Conv2d(Module):
                 # Pad grad_input if necessary
                 if p_h > 0 or p_w > 0:
                     grad_input_padded = np.pad(
-                        grad_input, ((0, 0), (0, 0), (p_h, p_h), (p_w, p_w)), mode="constant"
-                    )
+                        grad_input, ((0, 0), (0, 0), (p_h, p_h), (p_w, p_w)), mode="constant")
                 else:
                     grad_input_padded = grad_input
 
@@ -164,7 +180,7 @@ class Conv2d(Module):
                                 w_start = ow * s_w
 
                                 grad_input_padded[
-                                    b, :, h_start : h_start + k_h, w_start : w_start + k_w
+                                    b, :, h_start: h_start + k_h, w_start: w_start + k_w
                                 ] += (self.weight.data[oc] * grad_output[b, oc, oh, ow])
 
                 # Remove padding from gradient
@@ -199,7 +215,11 @@ class Dropout(Module):
 class BatchNorm1d(Module):
     """1D Batch Normalization."""
 
-    def __init__(self, num_features: int, eps: float = 1e-5, momentum: float = 0.1):
+    def __init__(
+            self,
+            num_features: int,
+            eps: float = 1e-5,
+            momentum: float = 0.1):
         super().__init__()
         self.num_features = num_features
         self.eps = eps
@@ -220,24 +240,33 @@ class BatchNorm1d(Module):
             batch_var = np.var(x.data, axis=0)
 
             # Update running statistics
-            self.running_mean = (1 - self.momentum) * self.running_mean + self.momentum * batch_mean
-            self.running_var = (1 - self.momentum) * self.running_var + self.momentum * batch_var
+            self.running_mean = (1 - self.momentum) * \
+                self.running_mean + self.momentum * batch_mean
+            self.running_var = (1 - self.momentum) * \
+                self.running_var + self.momentum * batch_var
 
             # Normalize
             x_norm = (x.data - batch_mean) / np.sqrt(batch_var + self.eps)
         else:
             # Use running statistics
-            x_norm = (x.data - self.running_mean) / np.sqrt(self.running_var + self.eps)
+            x_norm = (x.data - self.running_mean) / \
+                np.sqrt(self.running_var + self.eps)
 
         # Scale and shift
         output = x_norm * self.weight.data + self.bias.data
-        return Tensor(output, requires_grad=x.requires_grad or self.weight.requires_grad)
+        return Tensor(
+            output,
+            requires_grad=x.requires_grad or self.weight.requires_grad)
 
 
 class BatchNorm2d(Module):
     """2D Batch Normalization."""
 
-    def __init__(self, num_features: int, eps: float = 1e-5, momentum: float = 0.1):
+    def __init__(
+            self,
+            num_features: int,
+            eps: float = 1e-5,
+            momentum: float = 0.1):
         super().__init__()
         self.num_features = num_features
         self.eps = eps
@@ -255,15 +284,20 @@ class BatchNorm2d(Module):
             mean = x.data.mean(axis=(0, 2, 3), keepdims=True)
             var = x.data.var(axis=(0, 2, 3), keepdims=True)
 
-            self.running_mean = (1 - self.momentum) * self.running_mean + self.momentum * mean
-            self.running_var = (1 - self.momentum) * self.running_var + self.momentum * var
+            self.running_mean = (1 - self.momentum) * \
+                self.running_mean + self.momentum * mean
+            self.running_var = (1 - self.momentum) * \
+                self.running_var + self.momentum * var
 
             x_norm = (x.data - mean) / np.sqrt(var + self.eps)
         else:
-            x_norm = (x.data - self.running_mean) / np.sqrt(self.running_var + self.eps)
+            x_norm = (x.data - self.running_mean) / \
+                np.sqrt(self.running_var + self.eps)
 
         output = x_norm * self.weight.data + self.bias.data
-        return Tensor(output, requires_grad=x.requires_grad or self.weight.requires_grad)
+        return Tensor(
+            output,
+            requires_grad=x.requires_grad or self.weight.requires_grad)
 
 
 class LayerNorm(Module):
@@ -284,7 +318,9 @@ class LayerNorm(Module):
         var = x.data.var(axis=-1, keepdims=True)
         x_norm = (x.data - mean) / np.sqrt(var + self.eps)
         output = x_norm * self.weight.data + self.bias.data
-        return Tensor(output, requires_grad=x.requires_grad or self.weight.requires_grad)
+        return Tensor(
+            output,
+            requires_grad=x.requires_grad or self.weight.requires_grad)
 
 
 class Embedding(Module):
@@ -296,9 +332,14 @@ class Embedding(Module):
         self.embedding_dim = embedding_dim
 
         # Initialize embeddings
-        self.weight = Parameter(np.random.randn(num_embeddings, embedding_dim) * 0.01)
+        self.weight = Parameter(
+            np.random.randn(
+                num_embeddings,
+                embedding_dim) * 0.01)
 
     def forward(self, input):
         # Input should be indices - ensure they are integers
         indices = input.data.astype(np.int32)
-        return Tensor(self.weight.data[indices], requires_grad=self.weight.requires_grad)
+        return Tensor(
+            self.weight.data[indices],
+            requires_grad=self.weight.requires_grad)

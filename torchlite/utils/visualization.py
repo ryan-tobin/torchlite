@@ -28,8 +28,18 @@ class GradientFlow:
                 max_grads.append(np.max(np.abs(param.grad)))
 
         plt.figure(figsize=(10, 6))
-        plt.bar(np.arange(len(max_grads)), max_grads, alpha=0.6, label="max gradient")
-        plt.bar(np.arange(len(ave_grads)), ave_grads, alpha=0.6, label="mean gradient")
+        plt.bar(
+            np.arange(
+                len(max_grads)),
+            max_grads,
+            alpha=0.6,
+            label="max gradient")
+        plt.bar(
+            np.arange(
+                len(ave_grads)),
+            ave_grads,
+            alpha=0.6,
+            label="mean gradient")
         plt.hlines(0, 0, len(ave_grads) + 1, linewidth=1, color="black")
         plt.xticks(range(0, len(ave_grads)), layers, rotation="vertical")
         plt.xlim(left=-1, right=len(ave_grads))
@@ -79,7 +89,7 @@ def visualize_activations(
     if n_layers == 1:
         axes = [axes]
 
-    for ax, (layer_name, activation) in zip(axes, activations.items()):
+    for ax, (layer_name, activation) in zip(axes, activations.items(, strict=False)):
         if len(activation.shape) == 4:
             img = activation[0, 0]
         elif len(activation.shape) == 2:

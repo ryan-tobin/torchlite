@@ -9,15 +9,26 @@ from .module import Module, Parameter
 class RNNCell(Module):
     """Basic RNN cell."""
 
-    def __init__(self, input_size, hidden_size, bias=True, nonlinearity="tanh"):
+    def __init__(
+            self,
+            input_size,
+            hidden_size,
+            bias=True,
+            nonlinearity="tanh"):
         super().__init__()
         self.input_size = input_size
         self.hidden_size = hidden_size
         self.nonlinearity = nonlinearity
 
         # Weight matrices
-        self.weight_ih = Parameter(np.random.randn(input_size, hidden_size) * 0.01)
-        self.weight_hh = Parameter(np.random.randn(hidden_size, hidden_size) * 0.01)
+        self.weight_ih = Parameter(
+            np.random.randn(
+                input_size,
+                hidden_size) * 0.01)
+        self.weight_hh = Parameter(
+            np.random.randn(
+                hidden_size,
+                hidden_size) * 0.01)
 
         if bias:
             self.bias_ih = Parameter(np.zeros(hidden_size))
@@ -41,7 +52,10 @@ class RNNCell(Module):
         h_new = gi + gh
 
         if self.nonlinearity == "tanh":
-            h_new = Tensor(np.tanh(h_new.data), requires_grad=h_new.requires_grad)
+            h_new = Tensor(
+                np.tanh(
+                    h_new.data),
+                requires_grad=h_new.requires_grad)
         elif self.nonlinearity == "relu":
             h_new = h_new.relu()
 
@@ -91,7 +105,8 @@ class RNN(Module):
         seq_len, batch_size, _ = input.shape
 
         if h_0 is None:
-            h_0 = [Tensor(np.zeros((batch_size, self.hidden_size))) for _ in range(self.num_layers)]
+            h_0 = [Tensor(np.zeros((batch_size, self.hidden_size)))
+                   for _ in range(self.num_layers)]
 
         outputs = []
         h_n = []
@@ -128,8 +143,14 @@ class LSTMCell(Module):
         self.hidden_size = hidden_size
 
         # Weight matrices for input, forget, cell, and output gates
-        self.weight_ih = Parameter(np.random.randn(input_size, 4 * hidden_size) * 0.01)
-        self.weight_hh = Parameter(np.random.randn(hidden_size, 4 * hidden_size) * 0.01)
+        self.weight_ih = Parameter(
+            np.random.randn(
+                input_size,
+                4 * hidden_size) * 0.01)
+        self.weight_hh = Parameter(
+            np.random.randn(
+                hidden_size,
+                4 * hidden_size) * 0.01)
 
         if bias:
             self.bias_ih = Parameter(np.zeros(4 * hidden_size))
@@ -170,8 +191,13 @@ class LSTM(Module):
     """Multi-layer LSTM."""
 
     def __init__(
-        self, input_size, hidden_size, num_layers=1, bias=True, batch_first=False, dropout=0.0
-    ):
+            self,
+            input_size,
+            hidden_size,
+            num_layers=1,
+            bias=True,
+            batch_first=False,
+            dropout=0.0):
         super().__init__()
         self.input_size = input_size
         self.hidden_size = hidden_size
@@ -201,8 +227,10 @@ class LSTM(Module):
         seq_len, batch_size, _ = input.shape
 
         if states is None:
-            h_0 = [Tensor(np.zeros((batch_size, self.hidden_size))) for _ in range(self.num_layers)]
-            c_0 = [Tensor(np.zeros((batch_size, self.hidden_size))) for _ in range(self.num_layers)]
+            h_0 = [Tensor(np.zeros((batch_size, self.hidden_size)))
+                   for _ in range(self.num_layers)]
+            c_0 = [Tensor(np.zeros((batch_size, self.hidden_size)))
+                   for _ in range(self.num_layers)]
         else:
             h_0, c_0 = states
 
@@ -214,7 +242,8 @@ class LSTM(Module):
             c_t = list(c_0)
 
             for layer_idx, cell in enumerate(self.cells):
-                h_t[layer_idx], c_t[layer_idx] = cell(x_t, (h_t[layer_idx], c_t[layer_idx]))
+                h_t[layer_idx], c_t[layer_idx] = cell(
+                    x_t, (h_t[layer_idx], c_t[layer_idx]))
                 x_t = h_t[layer_idx]
 
                 if self.dropout is not None and layer_idx < self.num_layers - 1:
@@ -236,8 +265,13 @@ class GRU(Module):
     """Gated Recurrent Unit - simplified implementation."""
 
     def __init__(
-        self, input_size, hidden_size, num_layers=1, bias=True, batch_first=False, dropout=0.0
-    ):
+            self,
+            input_size,
+            hidden_size,
+            num_layers=1,
+            bias=True,
+            batch_first=False,
+            dropout=0.0):
         super().__init__()
         self.input_size = input_size
         self.hidden_size = hidden_size
@@ -246,9 +280,16 @@ class GRU(Module):
 
         # For now, just use LSTM as placeholder
         # In a full implementation, would create GRUCell
-        self._lstm = LSTM(input_size, hidden_size, num_layers, bias, batch_first, dropout)
+        self._lstm = LSTM(
+            input_size,
+            hidden_size,
+            num_layers,
+            bias,
+            batch_first,
+            dropout)
 
     def forward(self, input, h_0=None):
         # Simplified - use LSTM and ignore cell state
-        output, (h_n, _) = self._lstm(input, (h_0, h_0) if h_0 is not None else None)
+        output, (h_n, _) = self._lstm(
+            input, (h_0, h_0) if h_0 is not None else None)
         return output, h_n
