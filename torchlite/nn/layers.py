@@ -1,7 +1,9 @@
-import numpy as np
-from .module import Module, Parameter
-from ..tensor import Tensor
 from typing import Optional, Tuple, Union
+
+import numpy as np
+
+from ..tensor import Tensor
+from .module import Module, Parameter
 
 
 class Linear(Module):

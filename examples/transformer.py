@@ -3,11 +3,13 @@ Transformer implementation using TorchLite.
 Demonstrates how to build complex architectures.
 """
 
+import math
+
 import numpy as np
+
 import torchlite as tl
 import torchlite.nn as nn
 import torchlite.optim as optim
-import math
 
 
 class PositionalEncoding(nn.Module):

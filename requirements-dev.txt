@@ -1,0 +1,42 @@
+
+# requirements-dev.txt
+# Development dependencies for TorchLite
+
+# Code formatting
+black>=24.0.0
+isort>=5.13.0
+
+# Linting
+flake8>=7.0.0
+flake8-bugbear>=24.0.0
+flake8-comprehensions>=3.14.0
+flake8-simplify>=0.21.0
+pylint>=3.0.0
+pydocstyle>=6.3.0
+
+# Type checking
+mypy>=1.8.0
+types-tqdm
+
+# Testing
+pytest>=8.0.0
+pytest-cov>=4.1.0
+pytest-xdist>=3.5.0
+pytest-timeout>=2.2.0
+pytest-benchmark>=4.0.0
+
+# Pre-commit
+pre-commit>=3.6.0
+
+# Documentation
+sphinx>=7.2.0
+sphinx-rtd-theme>=2.0.0
+myst-parser>=2.0.0
+
+# Security
+bandit[toml]>=1.7.0
+
+# Build tools
+build>=1.0.0
+wheel>=0.42.0
+twine>=4.0.0

@@ -1,8 +1,9 @@
 """Recurrent neural network layers"""
 
 import numpy as np
-from .module import Module, Parameter
+
 from ..tensor import Tensor
+from .module import Module, Parameter
 
 
 class RNNCell(Module):

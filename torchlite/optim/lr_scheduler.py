@@ -2,8 +2,9 @@
 Learning rate schedulers
 """
 
-from abc import ABC, abstractmethod
 import math
+from abc import ABC, abstractmethod
+
 import numpy as np
 
 

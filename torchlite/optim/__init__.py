@@ -2,10 +2,9 @@
 Optimization algorithms for TorchLite.
 """
 
-from .optimizer import Optimizer
-
-from .sgd import SGD
 from .adam import Adam
+from .optimizer import Optimizer
+from .sgd import SGD
 
 try:
     from .rmsprop import RMSprop
@@ -19,12 +18,12 @@ except ImportError:
 
 try:
     from .lr_scheduler import (
-        LRScheduler,
-        StepLR,
-        ExponentialLR,
         CosineAnnealingLR,
-        ReduceLROnPlateau,
+        ExponentialLR,
+        LRScheduler,
         OneCycleLR,
+        ReduceLROnPlateau,
+        StepLR,
     )
 
     _schedulers_available = True

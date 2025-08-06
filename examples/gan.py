@@ -3,11 +3,12 @@ GAN (Generative Adversarial Network) example using TorchLite.
 Demonstrates how to train competing networks.
 """
 
+import matplotlib.pyplot as plt
 import numpy as np
+
 import torchlite as tl
 import torchlite.nn as nn
 import torchlite.optim as optim
-import matplotlib.pyplot as plt
 
 
 class Generator(nn.Module):

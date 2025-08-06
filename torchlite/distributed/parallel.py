@@ -1,7 +1,9 @@
 """Simple data parallel implementation"""
 
 from typing import List
+
 import numpy as np
+
 from ..nn.module import Module
 from ..tensor import Tensor
 

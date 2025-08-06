@@ -4,13 +4,15 @@
 MNIST CNN example using TorchLite.
 Demonstrates basic CNN training on MNIST dataset.
 """
+import time
+
 import numpy as np
+
 import torchlite as tl
 import torchlite.nn as nn
 import torchlite.optim as optim
 from torchlite.data import DataLoader, TensorDataset
-from torchlite.data.transforms import Compose, ToTensor, Normalize
-import time
+from torchlite.data.transforms import Compose, Normalize, ToTensor
 
 
 # For demonstration, we'll create synthetic MNIST-like data

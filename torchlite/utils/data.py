@@ -1,9 +1,10 @@
-import os
 import hashlib
+import os
+import shutil
 import tarfile
 import urllib.request
 import zipfile
-import shutil
-from typing import Tuple, List, Optional, Union
+from typing import List, Optional, Tuple, Union
+
 import numpy as np
 from tqdm import tqdm

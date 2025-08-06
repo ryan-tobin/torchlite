@@ -3,17 +3,14 @@
 Neural network modules for TorchLite.
 """
 
-from .module import Module, Parameter
-
-from .container import Sequential, ModuleList, ModuleDict
-
-from .layers import Linear, Conv2d, Dropout, BatchNorm1d, BatchNorm2d, LayerNorm, Embedding
-from .activations import ReLU, Sigmoid, Tanh, Softmax, LeakyReLU, GELU, SiLU
-from .loss import MSELoss, CrossEntropyLoss, BCELoss, L1Loss
-from .pooling import MaxPool2d, AvgPool2d, AdaptiveAvgPool2d
-
-from .rnn import RNN, LSTM, GRU
+from .activations import GELU, LeakyReLU, ReLU, Sigmoid, SiLU, Softmax, Tanh
 from .attention import MultiheadAttention
+from .container import ModuleDict, ModuleList, Sequential
+from .layers import BatchNorm1d, BatchNorm2d, Conv2d, Dropout, Embedding, LayerNorm, Linear
+from .loss import BCELoss, CrossEntropyLoss, L1Loss, MSELoss
+from .module import Module, Parameter
+from .pooling import AdaptiveAvgPool2d, AvgPool2d, MaxPool2d
+from .rnn import GRU, LSTM, RNN
 
 __all__ = [
     # Core

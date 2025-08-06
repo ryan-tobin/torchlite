@@ -1,6 +1,7 @@
-from .module import Module
-from ..tensor import Tensor
 import numpy as np
+
+from ..tensor import Tensor
+from .module import Module
 
 
 class ReLU(Module):

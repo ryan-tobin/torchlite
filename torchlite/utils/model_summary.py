@@ -1,9 +1,11 @@
 """Model summary and visualization utils."""
 
-from typing import List, Tuple, Dict
-import numpy as np
-from ..nn.module import Module
 from collections import OrderedDict
+from typing import Dict, List, Tuple
+
+import numpy as np
+
+from ..nn.module import Module
 from ..tensor import Tensor
 
 

@@ -1,8 +1,18 @@
-import pytest
 import numpy as np
+import pytest
+
 from torchlite import Tensor
-from torchlite.nn import Module, Linear, Conv2d, ReLU, Sigmoid, Dropout, BatchNorm1d
-from torchlite.nn import MSELoss, CrossEntropyLoss
+from torchlite.nn import (
+    BatchNorm1d,
+    Conv2d,
+    CrossEntropyLoss,
+    Dropout,
+    Linear,
+    Module,
+    MSELoss,
+    ReLU,
+    Sigmoid,
+)
 
 
 class TestModules:

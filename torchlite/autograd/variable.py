@@ -3,8 +3,9 @@ Variable wrapper for tensors with autograd support.
 Legacy API for compatibility.
 """
 
-from ..tensor import Tensor
 import warnings
+
+from ..tensor import Tensor
 
 
 class Variable(Tensor):

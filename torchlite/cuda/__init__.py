@@ -13,7 +13,7 @@ except ImportError:
     cp = None
     CUDA_AVAILABLE = False
 
-from .kernels import cuda_add, cuda_multiply, cuda_matmul, cuda_relu, cuda_sigmoid, cuda_tanh
+from .kernels import cuda_add, cuda_matmul, cuda_multiply, cuda_relu, cuda_sigmoid, cuda_tanh
 
 __all__ = [
     "CUDA_AVAILABLE",

@@ -4,8 +4,10 @@ Run with: python -m pytest tests/benchmarks/ -v
 """
 
 import time
+
 import numpy as np
 import pytest
+
 from torchlite import Tensor
 
 

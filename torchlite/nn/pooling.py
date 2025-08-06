@@ -1,15 +1,14 @@
 """Pooling layers for neural networks."""
 
-import numpy as np
-from .module import Module
-from ..tensor import Tensor
 from typing import Tuple
+
+import numpy as np
+
+from ..tensor import Tensor
+from .module import Module
 
 # Simple working MaxPool2d - replace the class in torchlite/nn/pooling.py
 
-import numpy as np
-from .module import Module
-from ..tensor import Tensor
 
 
 class MaxPool2d(Module):

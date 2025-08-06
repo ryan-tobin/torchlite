@@ -1,7 +1,8 @@
 """Simple JIT tracing for optimization"""
 
-from typing import Callable, Any
 import inspect
+from typing import Any, Callable
+
 from ..nn.module import Module
 
 

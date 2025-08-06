@@ -4,10 +4,8 @@ TorchLite - A lightweight deep learning framework
 
 __version__ = "0.1.0"
 
+from . import nn, optim
 from .tensor import Tensor
-
-from . import nn
-from . import optim
 
 try:
     from . import data

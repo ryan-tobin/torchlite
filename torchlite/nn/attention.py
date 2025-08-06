@@ -1,9 +1,11 @@
 """Attention mechanisms."""
 
-import numpy as np
-from .module import Module, Parameter
-from ..tensor import Tensor
 import math
+
+import numpy as np
+
+from ..tensor import Tensor
+from .module import Module, Parameter
 
 
 class MultiheadAttention(Module):
@@ -20,7 +22,7 @@ class MultiheadAttention(Module):
         self.scaling = self.head_dim**-0.5
 
         # Import here to avoid circular imports
-        from .layers import Linear, Dropout
+        from .layers import Dropout, Linear
 
         self.q_proj = Linear(embed_dim, embed_dim, bias=bias)
         self.k_proj = Linear(embed_dim, embed_dim, bias=bias)

@@ -1,9 +1,11 @@
 """Module Implementation"""
 
-from typing import Dict, Iterator, Tuple, Union
 from collections import OrderedDict
-from ..tensor import Tensor
+from typing import Dict, Iterator, Tuple, Union
+
 import numpy as np
+
+from ..tensor import Tensor
 
 
 class Parameter(Tensor):

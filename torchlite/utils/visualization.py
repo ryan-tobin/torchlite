@@ -1,8 +1,10 @@
 """Visualization utilities for neural networks."""
 
+from typing import Any, Dict, List, Optional, Tuple
+
 import matplotlib.pyplot as plt
 import numpy as np
-from typing import Dict, List, Optional, Any, Tuple
+
 from ..nn.module import Module
 
 

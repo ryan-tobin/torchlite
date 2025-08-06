@@ -2,9 +2,10 @@
 Base class for all differentiable functions.
 """
 
-from typing import Any, Tuple, Optional
-import numpy as np
 from abc import ABC, abstractmethod
+from typing import Any, Optional, Tuple
+
+import numpy as np
 
 
 class FunctionCtx:
