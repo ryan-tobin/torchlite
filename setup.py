@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
-from pathlib import Path 
+from pathlib import Path
 
-this_directory = Path(__file__).parent 
+this_directory = Path(__file__).parent
 long_description = (this_directory / "README.md").read_text()
 
 setup(
@@ -16,7 +16,7 @@ setup(
     project_urls={
         "Bug Tracker": "https://github.com/ryan-tobin/torchlite/issues",
         "Source Code": "https://github.com/ryan-tobin/torchlite",
-        "Documentation": "https://github.com/ryan-tobin/torchlite/docs"
+        "Documentation": "https://github.com/ryan-tobin/torchlite/docs",
     },
     packages=find_packages(exclude=["tests*", "examples*", "docs*"]),
     classifiers=[
