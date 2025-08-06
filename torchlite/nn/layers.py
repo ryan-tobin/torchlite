@@ -25,7 +25,7 @@ class Linear(Module):
             out = out + self.bias 
         return out 
     
-class Conv2D(Module):
+class Conv2d(Module):
     """2D Convolutional layer."""
 
     def __init__(self, in_channels: int, out_channels: int,

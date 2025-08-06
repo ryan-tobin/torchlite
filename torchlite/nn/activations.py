@@ -52,3 +52,29 @@ class Softmax(Module):
 
         out._backward = _backward
         return out 
+    
+class LeakyReLU(Module):
+    """Leaky ReLU Activation."""
+
+    def __init__(self, negative_slope=0.01):
+        super().__init__()
+        self.negative_slope = negative_slope
+
+    def forward(self, x):
+        data = np.where(x.data > 0, x.data, x.data * self.negative_slope)
+        return Tensor(data, requires_grad=x.requires_grad)
+    
+class SiLU(Module):
+    """Sigmoid Linear Unit (Swish) activation"""
+
+    def forward(self, x):
+        sigmoid = 1 / (1 + np.exp(-x.data))
+        data = x.data * sigmoid 
+        return Tensor(data, requires_grad=x.requires_grad)
+
+class GELU(Module):
+    """Guassian Error Linear Unit activation."""
+
+    def forward(self, x):
+        data = 0.5 * x.data * (1 + np.tanh(np.sqrt(2 / np.pi) * (x.data + 0.044715 * x.data**3)))
+        return Tensor(data, requires_grad=x.requires_grad)

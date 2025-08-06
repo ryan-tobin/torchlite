@@ -30,3 +30,21 @@ class CrossEntropyLoss(Module):
 
         out._backward = _backward
         return out 
+    
+class BCELoss(Module):
+    """Binary Cross Entropy Loss."""
+
+    def forward(self, predictions, targets):
+        eps = 1e-8
+        loss = -(targets.data * np.log(predictions.data + eps) + 
+                 (1 - targets.data) * np.log(1-predictions.data + eps))
+        return Tensor(np.mean(loss), requires_grad=predictions.requires_grad)
+    
+class L1Loss(Module):
+    """L1 (Mean Absolute Error) Loss."""
+
+    def forward(self, predictions, targets):
+        loss = np.abs(predictions.data - targets.data)
+        return Tensor(np.mean(loss), requires_grad=predictions.requires_grad)
+    
+    

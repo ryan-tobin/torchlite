@@ -42,37 +42,4 @@ class DataLoader:
             return tuple(np.stack([item[i] for item in batch]) for i in range(len(batch[0])))
         else:
             return np.stack(batch)
-        
-# Example usage demonstration
-if __name__ == "__main__":
-    import torchlite as tl 
 
-    class SimpleNet(tl.nn.Module):
-        def __init__(self):
-            super().__init__()
-            self.fc1 = tl.nn.Linear(784, 128)
-            self.relu = tl.nn.ReLU()
-            self.fc2 = tl.nn.Linear(128, 10)
-
-        def forward(self, x):
-            x = self.fc1(x)
-            x = self.relu(x)
-            x = self.fc2(x)
-            return x 
-        
-    # Create model and optimizer
-    model = SimpleNet()
-    optimizer = tl.optim.Adam(model.parameters(), lr=0.001)
-    criterion = tl.nn.CrossEntropyLoss()
-
-    # Training loop example
-    for epoch in range(10):
-        # Forward pass
-        outputs = model(inputs)
-        loss = criterion(outputs, targets)
-
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
-
-        print(f"Epoch {epoch}, Loss: {loss.data}")
