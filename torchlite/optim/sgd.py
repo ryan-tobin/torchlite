@@ -1,34 +1,44 @@
 from .optimizer import Optimizer
-import numpy as np 
+import numpy as np
+
 
 class SGD(Optimizer):
-    """Stochastic Gradient Descent optimizer"""
+    """Stochastic Gradient Descent optimizer."""
 
-    def __init__(self, params, lr: float = 0.01, momentum: float = 0, wieght_decay: float = 0):
-        defaults = dict(lr=lr, momentum=momentum, wieght_decay=wieght_decay)
+    def __init__(self, params, lr: float = 0.01, momentum: float = 0, weight_decay: float = 0):
+        if lr < 0.0:
+            raise ValueError(f"Invalid learning rate: {lr}")
+        if momentum < 0.0:
+            raise ValueError(f"Invalid momentum value: {momentum}")
+        if weight_decay < 0.0:
+            raise ValueError(f"Invalid weight_decay value: {weight_decay}")
+
+        defaults = dict(lr=lr, momentum=momentum, weight_decay=weight_decay)
         super().__init__(params, defaults)
 
     def step(self):
+        """Performs a single optimization step."""
         for group in self.param_groups:
-            for param in group['params']:
+            weight_decay = group["weight_decay"]
+            momentum = group["momentum"]
+
+            for param in group["params"]:
                 if param.grad is None:
-                    continue 
+                    continue
 
-                grad = param.grad 
-                if group['weight_decay'] != 0:
-                    grad = grad + group['weight_decay'] * param.data
+                d_p = param.grad
 
-                if group['momentum'] != 0:
-                    if param not in self.state:
-                        self.state[param] = {}
+                if weight_decay != 0:
+                    d_p = d_p + weight_decay * param.data
 
-                    if 'momentum_buffer' not in self.state[param]:
-                        buf = self.state[param]['momentum_buffer'] = np.zeros_like(grad)
+                if momentum != 0:
+                    param_state = self.state.setdefault(param, {})
+                    if "momentum_buffer" not in param_state:
+                        buf = param_state["momentum_buffer"] = np.zeros_like(param.data)
                     else:
-                        buf = self.state[param]['momentum_buffer']
+                        buf = param_state["momentum_buffer"]
 
-                    buf = group['momentum'] * buf + grad 
-                    grad = buf 
+                    buf = momentum * buf + d_p
+                    d_p = buf
 
-                param.data -= group['lr'] * grad 
-
+                param.data = param.data - group["lr"] * d_p

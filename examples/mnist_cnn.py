@@ -1,72 +1,73 @@
+# Replace the content of examples/mnist_cnn.py with this fixed version
+
 """
 MNIST CNN example using TorchLite.
 Demonstrates basic CNN training on MNIST dataset.
 """
-import numpy as np 
-import torchlite as tl 
-import torchlite.nn as nn 
-import torchlite.optim as optim 
+import numpy as np
+import torchlite as tl
+import torchlite.nn as nn
+import torchlite.optim as optim
 from torchlite.data import DataLoader, TensorDataset
 from torchlite.data.transforms import Compose, ToTensor, Normalize
-import time 
+import time
 
 # For demonstration, we'll create synthetic MNIST-like data
-# In practice, you would load real MNIST data
 def create_synthetic_mnist(n_samples=1000):
-    """Create synthetic MNIST-like data for demonstration"""
+    """Create synthetic MNIST-like data for demonstration."""
     X = np.random.randn(n_samples, 1, 28, 28).astype(np.float32)
     y = np.random.randint(0, 10, n_samples)
-    return X, y 
+    return X, y
 
 class ConvNet(nn.Module):
-    """Simple CNN for MNIST classification"""
-
+    """Simple CNN for MNIST classification."""
+    
     def __init__(self):
         super().__init__()
-        # Convolutional layers 
+        # Convolutional layers
         self.conv1 = nn.Conv2d(1, 32, kernel_size=3, padding=1)
+        self.relu1 = nn.ReLU()  # Separate ReLU instance
+        self.pool1 = nn.MaxPool2d(2, 2)
+        
         self.conv2 = nn.Conv2d(32, 64, kernel_size=3, padding=1)
-
-        # Pooling
-        self.pool = nn.MaxPool2d(2,2)
-
+        self.relu2 = nn.ReLU()  # Separate ReLU instance
+        self.pool2 = nn.MaxPool2d(2, 2)
+        
         # Fully connected layers
         self.fc1 = nn.Linear(64 * 7 * 7, 128)
-        self.fc2 = nn.Linear(128, 10)
-
-        # Activation and regularization
-        self.relu = nn.ReLU()
+        self.relu3 = nn.ReLU()  # Separate ReLU instance
         self.dropout = nn.Dropout(0.5)
-
+        self.fc2 = nn.Linear(128, 10)
+    
     def forward(self, x):
         # Conv block 1
         x = self.conv1(x)
-        x = self.relu(x)
-        x = self.pool(x)
-
+        x = self.relu1(x)
+        x = self.pool1(x)
+        
         # Conv block 2
         x = self.conv2(x)
-        x = self.relu(x)
-        x = self.pool(x)
-
+        x = self.relu2(x)
+        x = self.pool2(x)
+        
         # Flatten
         x = x.reshape(x.shape[0], -1)
-
+        
         # FC layers
         x = self.fc1(x)
-        x = self.relu(x)
+        x = self.relu3(x)
         x = self.dropout(x)
         x = self.fc2(x)
-
+        
         return x
-    
+
 def train_epoch(model, dataloader, criterion, optimizer, device=None):
-    """Train for one epoch"""
+    """Train for one epoch."""
     model.train()
     total_loss = 0
     correct = 0
-    total = 0 
-
+    total = 0
+    
     for batch_idx, (data, target) in enumerate(dataloader):
         # Convert to tensors
         data = tl.Tensor(data, requires_grad=True)
@@ -86,8 +87,8 @@ def train_epoch(model, dataloader, criterion, optimizer, device=None):
         pred = np.argmax(output.data, axis=1)
         correct += (pred == target.data).sum()
         total += target.shape[0]
-
-    return total_loss / len(dataloader), correct / total 
+    
+    return total_loss / len(dataloader), correct / total
 
 def evaluate(model, dataloader, criterion, device=None):
     """Evaluate model on validation/test set."""

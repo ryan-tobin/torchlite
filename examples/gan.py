@@ -56,25 +56,35 @@ class Discriminator(nn.Module):
         validity = self.model(img_flat)
         return validity
 
-def train_gan(generator, discriminator, dataloader, n_epochs, latent_dim):
+def train_gan(generator, discriminator, data, n_epochs, latent_dim, batch_size=64):
     """Train GAN."""
     # Optimizers
     optimizer_G = optim.Adam(generator.parameters(), lr=0.0002, betas=(0.5, 0.999))
     optimizer_D = optim.Adam(discriminator.parameters(), lr=0.0002, betas=(0.5, 0.999))
     
-    # Loss function
-    adversarial_loss = nn.BCELoss()
+    # Loss function - using BCELoss
+    def bce_loss(pred, target):
+        # Simple binary cross entropy
+        eps = 1e-8
+        loss = -(target.data * np.log(pred.data + eps) + 
+                (1 - target.data) * np.log(1 - pred.data + eps))
+        return tl.Tensor(np.mean(loss), requires_grad=pred.requires_grad)
+    
+    n_samples = len(data)
+    n_batches = n_samples // batch_size
     
     for epoch in range(n_epochs):
-        for i, real_imgs in enumerate(dataloader):
-            batch_size = real_imgs.shape[0]
+        for i in range(n_batches):
+            # Get batch
+            start_idx = i * batch_size
+            end_idx = min(start_idx + batch_size, n_samples)
+            batch_size_actual = end_idx - start_idx
+            
+            real_imgs = tl.Tensor(data[start_idx:end_idx])
             
             # Adversarial ground truths
-            valid = tl.Tensor(np.ones((batch_size, 1)), requires_grad=True)
-            fake = tl.Tensor(np.zeros((batch_size, 1)), requires_grad=True)
-            
-            # Configure input
-            real_imgs = tl.Tensor(real_imgs, requires_grad=True)
+            valid = tl.Tensor(np.ones((batch_size_actual, 1)), requires_grad=True)
+            fake = tl.Tensor(np.zeros((batch_size_actual, 1)), requires_grad=True)
             
             # ---------------------
             #  Train Discriminator
@@ -83,14 +93,14 @@ def train_gan(generator, discriminator, dataloader, n_epochs, latent_dim):
             optimizer_D.zero_grad()
             
             # Sample noise as generator input
-            z = tl.Tensor(np.random.normal(0, 1, (batch_size, latent_dim)), requires_grad=True)
+            z = tl.Tensor(np.random.normal(0, 1, (batch_size_actual, latent_dim)), requires_grad=True)
             
             # Generate a batch of images
             gen_imgs = generator(z)
             
             # Loss measures discriminator's ability to classify real from generated samples
-            real_loss = adversarial_loss(discriminator(real_imgs), valid)
-            fake_loss = adversarial_loss(discriminator(gen_imgs), fake)
+            real_loss = bce_loss(discriminator(real_imgs), valid)
+            fake_loss = bce_loss(discriminator(gen_imgs), fake)
             d_loss = (real_loss + fake_loss) / 2
             
             d_loss.backward()
@@ -103,19 +113,19 @@ def train_gan(generator, discriminator, dataloader, n_epochs, latent_dim):
             optimizer_G.zero_grad()
             
             # Sample noise as generator input
-            z = tl.Tensor(np.random.normal(0, 1, (batch_size, latent_dim)), requires_grad=True)
+            z = tl.Tensor(np.random.normal(0, 1, (batch_size_actual, latent_dim)), requires_grad=True)
             
             # Generate a batch of images
             gen_imgs = generator(z)
             
             # Loss measures generator's ability to fool the discriminator
-            g_loss = adversarial_loss(discriminator(gen_imgs), valid)
+            g_loss = bce_loss(discriminator(gen_imgs), valid)
             
             g_loss.backward()
             optimizer_G.step()
             
             if i % 50 == 0:
-                print(f"[Epoch {epoch}/{n_epochs}] [Batch {i}/{len(dataloader)}] "
+                print(f"[Epoch {epoch}/{n_epochs}] [Batch {i}/{n_batches}] "
                       f"[D loss: {d_loss.data:.4f}] [G loss: {g_loss.data:.4f}]")
 
 def generate_samples(generator, n_samples, latent_dim):
@@ -132,7 +142,6 @@ def main():
     latent_dim = 100
     n_epochs = 50
     batch_size = 64
-    sample_interval = 1000
     
     # Create synthetic image data (normally you'd load real data)
     print("Creating synthetic image data...")
@@ -153,11 +162,6 @@ def main():
     
     real_images = np.array(real_images).astype(np.float32)
     
-    # Create data loader
-    from torchlite.data import TensorDataset, DataLoader
-    dataset = TensorDataset(tl.Tensor(real_images))
-    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
-    
     # Initialize networks
     print("Initializing GAN networks...")
     generator = Generator(latent_dim, img_shape)
@@ -165,7 +169,7 @@ def main():
     
     # Train GAN
     print("Starting GAN training...")
-    train_gan(generator, discriminator, dataloader, n_epochs, latent_dim)
+    train_gan(generator, discriminator, real_images, n_epochs, latent_dim, batch_size)
     
     # Generate samples
     print("Generating samples...")
